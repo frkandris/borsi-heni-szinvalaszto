@@ -27,7 +27,7 @@ A játék alatt mindkét játékos teljes állapota látszik:
 - ✅ **Nyert** · ❌ **Vesztett** · ⬜ **Nem értékelte még**
 - 💖 **Mindkettőnknek tetszik** — azok a párok, amiket Borsi és Heni is megnyertnek jelölt
 
-A nyert/vesztett elemeknél egy **↩** gombbal bármelyik színpárt vissza lehet küldeni „nem értékelte még" állapotba. A **Mindent töröl** gomb az összes szavazatot törli.
+A nyert/vesztett elemeknél egy **↩** gombbal bármelyik színpárt vissza lehet küldeni „nem értékelte még" állapotba.
 
 ## Tárolás
 

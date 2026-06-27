@@ -184,7 +184,7 @@
 
   /* --- stats --- */
   .favorites {
-    background: #fff5f8; border: 1px solid #f3d4df;
+    background: var(--card); border: 1px solid var(--border);
     border-radius: 16px; padding: 18px 20px; margin-bottom: 26px;
   }
   .favorites h3 { margin: 0 0 14px; font-size: 1.05rem; }
@@ -198,10 +198,10 @@
     border-radius: 16px; padding: 18px 20px;
   }
   .player-col > h3 { margin: 0 0 14px; font-size: 1.1rem; }
-  .stat-group { margin-bottom: 16px; }
+  .stat-group { margin-bottom: 28px; }
   .stat-group:last-child { margin-bottom: 0; }
   .stat-group h4 {
-    margin: 0 0 8px; font-size: 0.9rem; font-weight: 600;
+    margin: 0 0 10px; font-size: 0.9rem; font-weight: 600;
     display: flex; align-items: center; gap: 6px;
   }
   .stat-group h4 .count { color: var(--muted); font-weight: 500; }
@@ -221,12 +221,6 @@
   }
   .chip .reset-btn:hover { background: #ddd; }
 
-  .danger-row { text-align: center; margin-top: 34px; }
-  .danger-btn {
-    border: 1px solid #e0b4b4; background: #fff; color: #b3261e;
-    border-radius: 10px; padding: 10px 20px; font-weight: 600; cursor: pointer;
-  }
-  .danger-btn:hover { background: #fdf0f0; }
 </style>
 </head>
 <body>
@@ -428,16 +422,6 @@
 
       // stats
       body.appendChild(renderStats());
-
-      // reset all
-      const dz = document.createElement("div");
-      dz.className = "danger-row";
-      const resetBtn = document.createElement("button");
-      resetBtn.className = "danger-btn";
-      resetBtn.textContent = "Mindent töröl";
-      resetBtn.onclick = resetAll;
-      dz.appendChild(resetBtn);
-      body.appendChild(dz);
     }
 
     function sideEl(player) {
@@ -502,14 +486,6 @@
       renderPlay();
     }
 
-    function resetAll() {
-      if (!confirm("Biztosan törölsz minden szavazatot? Ez nem vonható vissza.")) return;
-      votes = { borsi: {}, heni: {} };
-      saveVotes();
-      currentPairs = { borsi: pickPair("borsi"), heni: pickPair("heni") };
-      renderPlay();
-    }
-
     // ---------- stats rendering ----------
     function chip(p, player, resettable) {
       const el = document.createElement("div");
@@ -558,7 +534,7 @@
       const favBox = document.createElement("div");
       favBox.className = "favorites";
       const favH = document.createElement("h3");
-      favH.innerHTML = `💖 Mindkettőnknek tetszik <span class="count" style="color:var(--muted);font-weight:500;">(${favs.length})</span>`;
+      favH.innerHTML = `Mindkettőnknek tetszik <span class="count" style="color:var(--muted);font-weight:500;">(${favs.length})</span>`;
       favBox.appendChild(favH);
       const favWrap = document.createElement("div");
       favWrap.className = "chip-wrap";
