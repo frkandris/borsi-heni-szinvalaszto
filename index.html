@@ -11,6 +11,7 @@
     --text: #1b1b1b;
     --muted: #6b6b6b;
     --border: #e6e6e3;
+    --accent: #2f5f95;
   }
   * { box-sizing: border-box; }
   body {
@@ -18,25 +19,60 @@
     font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, Helvetica, Arial, sans-serif;
     background: var(--bg);
     color: var(--text);
-    padding: 32px 16px 64px;
+    padding: 24px 16px 64px;
   }
-  h1 {
-    text-align: center;
-    font-weight: 600;
-    font-size: 1.8rem;
-    margin: 0 0 4px;
-  }
-  .sub {
-    text-align: center;
-    color: var(--muted);
-    margin: 0 0 32px;
-    font-size: 0.95rem;
-  }
-  .grid {
+
+  /* --- view switching --- */
+  .view { display: none; max-width: 1100px; margin: 0 auto; }
+  .view.active { display: block; }
+
+  /* --- top bar --- */
+  .topbar {
     max-width: 1100px;
-    margin: 0 auto;
+    margin: 0 auto 20px;
+    display: flex;
+    align-items: center;
+    gap: 12px;
+    min-height: 32px;
+  }
+  .back-btn {
+    background: none;
+    border: 1px solid var(--border);
+    border-radius: 8px;
+    padding: 6px 12px;
+    font-size: 0.9rem;
+    color: var(--text);
+    cursor: pointer;
+  }
+  .back-btn:hover { background: #efefec; }
+
+  /* --- home --- */
+  .home-buttons {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 18px;
+    justify-content: center;
+    margin-top: 8vh;
+  }
+  .home-btn {
+    background: var(--card);
+    border: 1px solid var(--border);
+    border-radius: 16px;
+    padding: 36px 28px;
+    min-width: 240px;
+    font-size: 1.25rem;
+    font-weight: 600;
+    cursor: pointer;
+    text-align: center;
+    transition: transform .08s ease, box-shadow .15s ease;
+  }
+  .home-btn:hover { transform: translateY(-2px); box-shadow: 0 6px 18px rgba(0,0,0,0.08); }
+  .home-btn .emoji { display: block; font-size: 2.4rem; margin-bottom: 10px; }
+
+  /* --- list grid --- */
+  .grid {
     display: grid;
-    grid-template-columns: repeat(auto-fill, minmax(220px, 1fr));
+    grid-template-columns: repeat(auto-fill, minmax(200px, 1fr));
     gap: 18px;
   }
   .card {
@@ -50,22 +86,15 @@
     text-align: center;
   }
   .circle {
-    width: 96px;
-    height: 96px;
     border-radius: 50%;
-    margin-bottom: 14px;
-  }
-  .name {
-    font-weight: 600;
-    font-size: 0.95rem;
-    margin-bottom: 8px;
-    line-height: 1.3;
+    flex-shrink: 0;
   }
   .colors {
     display: flex;
     flex-direction: column;
     gap: 4px;
     width: 100%;
+    margin-top: 12px;
   }
   .color-row {
     display: flex;
@@ -87,10 +116,119 @@
     font-size: 0.74rem;
     color: #999;
   }
+
+  /* --- play --- */
+  .arena {
+    display: flex; gap: 24px; justify-content: center;
+    align-items: stretch; flex-wrap: wrap; margin-bottom: 18px;
+  }
+  .choice {
+    background: var(--card); border: 2px solid var(--border);
+    border-radius: 18px; padding: 24px; cursor: pointer;
+    display: flex; flex-direction: column; align-items: center;
+    transition: transform .08s ease, border-color .12s ease, box-shadow .15s ease;
+    min-width: 200px;
+  }
+  .choice:hover { transform: translateY(-3px); border-color: var(--accent); box-shadow: 0 8px 22px rgba(0,0,0,0.1); }
+  .vs { align-self: center; font-weight: 700; color: var(--muted); font-size: 1.1rem; }
+
+  /* split screen: Borsi | Heni */
+  .split {
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+    gap: 0;
+    margin-bottom: 30px;
+    border: 1px solid var(--border);
+    border-radius: 18px;
+    overflow: hidden;
+    background: var(--card);
+  }
+  .side { padding: 22px 18px; }
+  .side:first-child { border-right: 1px solid var(--border); }
+  .side > h2 { text-align: center; margin: 0 0 18px; font-size: 1.3rem; }
+  @media (max-width: 720px) {
+    .split { grid-template-columns: 1fr; }
+    .side:first-child { border-right: none; border-bottom: 1px solid var(--border); }
+  }
+
+  .action-row { display: flex; gap: 14px; justify-content: center; margin-bottom: 8px; flex-wrap: wrap; }
+  .action-btn {
+    border: 1px solid var(--border); background: var(--card);
+    border-radius: 12px; padding: 12px 22px; font-size: 1rem; font-weight: 600;
+    cursor: pointer;
+  }
+  .action-btn:hover { background: #efefec; }
+  .hint { text-align: center; color: var(--muted); font-size: 0.85rem; margin-bottom: 30px; }
+
+  /* --- stats --- */
+  .favorites {
+    background: #fff5f8; border: 1px solid #f3d4df;
+    border-radius: 16px; padding: 18px 20px; margin-bottom: 26px;
+  }
+  .favorites h3 { margin: 0 0 14px; font-size: 1.05rem; }
+  .stats-columns {
+    display: grid;
+    grid-template-columns: repeat(auto-fit, minmax(280px, 1fr));
+    gap: 22px;
+  }
+  .player-col {
+    background: var(--card); border: 1px solid var(--border);
+    border-radius: 16px; padding: 18px 20px;
+  }
+  .player-col > h3 { margin: 0 0 14px; font-size: 1.1rem; }
+  .stat-group { margin-bottom: 16px; }
+  .stat-group:last-child { margin-bottom: 0; }
+  .stat-group h4 {
+    margin: 0 0 8px; font-size: 0.9rem; font-weight: 600;
+    display: flex; align-items: center; gap: 6px;
+  }
+  .stat-group h4 .count { color: var(--muted); font-weight: 500; }
+  .chip-wrap { display: flex; flex-wrap: wrap; gap: 8px; }
+  .empty { color: #b3b3b3; font-size: 0.82rem; font-style: italic; }
+
+  .chip {
+    display: flex; align-items: center; gap: 6px;
+    border: 1px solid var(--border); border-radius: 999px;
+    padding: 4px 8px 4px 4px; background: #fafafa;
+  }
+  .chip .chip-name { font-size: 0.78rem; color: var(--muted); max-width: 130px; }
+  .chip .reset-btn {
+    border: none; background: #ececec; color: #555;
+    border-radius: 50%; width: 20px; height: 20px; cursor: pointer;
+    font-size: 0.75rem; line-height: 1; display: flex; align-items: center; justify-content: center;
+  }
+  .chip .reset-btn:hover { background: #ddd; }
+
+  .danger-row { text-align: center; margin-top: 34px; }
+  .danger-btn {
+    border: 1px solid #e0b4b4; background: #fff; color: #b3261e;
+    border-radius: 10px; padding: 10px 20px; font-weight: 600; cursor: pointer;
+  }
+  .danger-btn:hover { background: #fdf0f0; }
 </style>
 </head>
 <body>
-  <div class="grid" id="grid"></div>
+
+  <!-- top bar (back button shown in sub-views) -->
+  <div class="topbar" id="topbar"></div>
+
+  <!-- HOME -->
+  <div class="view active" id="view-home">
+    <div class="home-buttons">
+      <button class="home-btn" onclick="showView('list')">Lista megtekintése</button>
+      <button class="home-btn" onclick="showView('play')">Játék</button>
+    </div>
+  </div>
+
+  <!-- LIST -->
+  <div class="view" id="view-list">
+    <div class="grid" id="grid"></div>
+  </div>
+
+  <!-- PLAY -->
+  <div class="view" id="view-play">
+    <div id="play-body"></div>
+  </div>
 
   <script>
     const products = [
@@ -130,24 +268,46 @@
       { name: "COLIBRI 3.0 DOUBLE – barna-homok", c1: ["#87795b", "barna"], c2: ["#3b3223", "sötétbarna"] },
       { name: "ORIGINAL – türkiz-tengerkék", c1: ["#62d8e4", "türkiz"], c2: null }
     ];
+    products.forEach((p, i) => { p.id = "p" + i; });
 
-    const grid = document.getElementById("grid");
+    const PLAYERS = { borsi: "Borsi", heni: "Heni" };
+    const STORAGE_KEY = "szinvalaszto-votes-v1";
 
-    products.forEach(p => {
-      const card = document.createElement("div");
-      card.className = "card";
+    // votes: { borsi: {id: "won"|"lost"}, heni: {...} }
+    let votes = loadVotes();
+    let currentPairs = { borsi: null, heni: null }; // each: [indexA, indexB]
 
-      const circle = document.createElement("div");
-      circle.className = "circle";
+    function loadVotes() {
+      try {
+        const raw = localStorage.getItem(STORAGE_KEY);
+        if (raw) {
+          const v = JSON.parse(raw);
+          return { borsi: v.borsi || {}, heni: v.heni || {} };
+        }
+      } catch (e) {}
+      return { borsi: {}, heni: {} };
+    }
+    function saveVotes() {
+      try { localStorage.setItem(STORAGE_KEY, JSON.stringify(votes)); } catch (e) {}
+    }
+    function statusOf(player, p) { return votes[player][p.id] || "unrated"; }
+
+    // ---------- circle / label helpers ----------
+    function circleEl(p, size) {
+      const c = document.createElement("div");
+      c.className = "circle";
+      c.style.width = size + "px";
+      c.style.height = size + "px";
       if (p.c2) {
-        circle.style.background = `linear-gradient(to right, ${p.c1[0]} 0 50%, ${p.c2[0]} 50% 100%)`;
+        c.style.background = `linear-gradient(to right, ${p.c1[0]} 0 50%, ${p.c2[0]} 50% 100%)`;
       } else {
-        circle.style.background = p.c1[0];
+        c.style.background = p.c1[0];
       }
-
+      return c;
+    }
+    function colorsEl(p) {
       const colors = document.createElement("div");
       colors.className = "colors";
-
       const rows = p.c2 ? [p.c1, p.c2] : [p.c1];
       rows.forEach(c => {
         const row = document.createElement("div");
@@ -155,15 +315,261 @@
         row.innerHTML = `
           <span class="swatch" style="background:${c[0]}"></span>
           <span>${c[1]}</span>
-          <span class="hex">${c[0]}</span>
-        `;
+          <span class="hex">${c[0]}</span>`;
         colors.appendChild(row);
       });
+      return colors;
+    }
 
-      card.appendChild(circle);
-      card.appendChild(colors);
-      grid.appendChild(card);
-    });
+    // ---------- view switching ----------
+    function showView(name) {
+      document.querySelectorAll(".view").forEach(v => v.classList.remove("active"));
+      document.getElementById("view-" + name).classList.add("active");
+
+      const topbar = document.getElementById("topbar");
+      topbar.innerHTML = "";
+      if (name !== "home") {
+        const back = document.createElement("button");
+        back.className = "back-btn";
+        back.textContent = "← Vissza";
+        back.onclick = () => showView("home");
+        topbar.appendChild(back);
+      }
+      if (name === "list") renderList();
+      if (name === "play") renderPlay();
+      window.scrollTo(0, 0);
+    }
+
+    // ---------- list ----------
+    function renderList() {
+      const grid = document.getElementById("grid");
+      grid.innerHTML = "";
+      products.forEach(p => {
+        const card = document.createElement("div");
+        card.className = "card";
+        card.appendChild(circleEl(p, 96));
+        card.appendChild(colorsEl(p));
+        grid.appendChild(card);
+      });
+    }
+
+    // ---------- play ----------
+    function pickPair(player) {
+      const allIdx = products.map((_, i) => i);
+      const unrated = allIdx.filter(i => statusOf(player, products[i]) === "unrated");
+      let a, b;
+      if (unrated.length >= 2) {
+        [a, b] = sampleTwo(unrated);
+      } else if (unrated.length === 1) {
+        a = unrated[0];
+        const rest = allIdx.filter(i => i !== a);
+        b = rest[Math.floor(Math.random() * rest.length)];
+      } else {
+        [a, b] = sampleTwo(allIdx);
+      }
+      // avoid repeating the exact same pair back-to-back
+      const prev = currentPairs[player];
+      if (prev && Math.min(a, b) === Math.min(...prev) && Math.max(a, b) === Math.max(...prev) && products.length > 2) {
+        return pickPair(player);
+      }
+      return Math.random() < 0.5 ? [a, b] : [b, a];
+    }
+    function sampleTwo(arr) {
+      const i = Math.floor(Math.random() * arr.length);
+      let j = Math.floor(Math.random() * (arr.length - 1));
+      if (j >= i) j++;
+      return [arr[i], arr[j]];
+    }
+
+    function renderPlay() {
+      const body = document.getElementById("play-body");
+      body.innerHTML = "";
+
+      // make sure both players have a pair
+      Object.keys(PLAYERS).forEach(player => {
+        if (!currentPairs[player]) currentPairs[player] = pickPair(player);
+      });
+
+      // split screen: Borsi | Heni, both play simultaneously
+      const split = document.createElement("div");
+      split.className = "split";
+      Object.keys(PLAYERS).forEach(player => {
+        split.appendChild(sideEl(player));
+      });
+      body.appendChild(split);
+
+      const hint = document.createElement("div");
+      hint.className = "hint";
+      hint.textContent = "Mindenki a saját oldalán választ: kattints a kedvencedre, vagy használd a gombokat.";
+      body.appendChild(hint);
+
+      // stats
+      body.appendChild(renderStats());
+
+      // reset all
+      const dz = document.createElement("div");
+      dz.className = "danger-row";
+      const resetBtn = document.createElement("button");
+      resetBtn.className = "danger-btn";
+      resetBtn.textContent = "Mindent töröl";
+      resetBtn.onclick = resetAll;
+      dz.appendChild(resetBtn);
+      body.appendChild(dz);
+    }
+
+    function sideEl(player) {
+      const side = document.createElement("div");
+      side.className = "side";
+      const h = document.createElement("h2");
+      h.textContent = PLAYERS[player];
+      side.appendChild(h);
+
+      const [ia, ib] = currentPairs[player];
+      const arena = document.createElement("div");
+      arena.className = "arena";
+      arena.appendChild(choiceEl(player, products[ia], "left"));
+      const vs = document.createElement("div");
+      vs.className = "vs";
+      vs.textContent = "vs";
+      arena.appendChild(vs);
+      arena.appendChild(choiceEl(player, products[ib], "right"));
+      side.appendChild(arena);
+
+      const actions = document.createElement("div");
+      actions.className = "action-row";
+      const both = document.createElement("button");
+      both.className = "action-btn";
+      both.textContent = "👍 Mindkettő tetszik";
+      both.onclick = () => vote(player, "both");
+      const none = document.createElement("button");
+      none.className = "action-btn";
+      none.textContent = "👎 Egyik sem";
+      none.onclick = () => vote(player, "neither");
+      actions.appendChild(both);
+      actions.appendChild(none);
+      side.appendChild(actions);
+      return side;
+    }
+
+    function choiceEl(player, p, side) {
+      const c = document.createElement("div");
+      c.className = "choice";
+      c.appendChild(circleEl(p, 120));
+      c.appendChild(colorsEl(p));
+      c.onclick = () => vote(player, side);
+      return c;
+    }
+
+    function vote(player, result) {
+      const [ia, ib] = currentPairs[player];
+      const left = products[ia].id, right = products[ib].id;
+      const set = (id, val) => { votes[player][id] = val; };
+      if (result === "left")   { set(left, "won");  set(right, "lost"); }
+      if (result === "right")  { set(left, "lost"); set(right, "won"); }
+      if (result === "both")   { set(left, "won");  set(right, "won"); }
+      if (result === "neither"){ set(left, "lost"); set(right, "lost"); }
+      saveVotes();
+      currentPairs[player] = pickPair(player);
+      renderPlay();
+    }
+
+    function resetVote(player, id) {
+      delete votes[player][id];
+      saveVotes();
+      renderPlay();
+    }
+
+    function resetAll() {
+      if (!confirm("Biztosan törölsz minden szavazatot? Ez nem vonható vissza.")) return;
+      votes = { borsi: {}, heni: {} };
+      saveVotes();
+      currentPairs = { borsi: pickPair("borsi"), heni: pickPair("heni") };
+      renderPlay();
+    }
+
+    // ---------- stats rendering ----------
+    function chip(p, player, resettable) {
+      const el = document.createElement("div");
+      el.className = "chip";
+      el.appendChild(circleEl(p, 26));
+      const name = document.createElement("span");
+      name.className = "chip-name";
+      name.textContent = `${p.c1[1]}${p.c2 ? " / " + p.c2[1] : ""}`;
+      el.appendChild(name);
+      if (resettable) {
+        const rb = document.createElement("button");
+        rb.className = "reset-btn";
+        rb.textContent = "↩";
+        rb.title = "Vissza nem értékelt állapotba";
+        rb.onclick = (e) => { e.stopPropagation(); resetVote(player, p.id); };
+        el.appendChild(rb);
+      }
+      return el;
+    }
+
+    function group(title, emoji, items, player, resettable) {
+      const g = document.createElement("div");
+      g.className = "stat-group";
+      const h = document.createElement("h4");
+      h.innerHTML = `${emoji} ${title} <span class="count">(${items.length})</span>`;
+      g.appendChild(h);
+      const wrap = document.createElement("div");
+      wrap.className = "chip-wrap";
+      if (items.length === 0) {
+        const e = document.createElement("span");
+        e.className = "empty";
+        e.textContent = "—";
+        wrap.appendChild(e);
+      } else {
+        items.forEach(p => wrap.appendChild(chip(p, player, resettable)));
+      }
+      g.appendChild(wrap);
+      return g;
+    }
+
+    function renderStats() {
+      const container = document.createElement("div");
+
+      // favorites: both players' "won"
+      const favs = products.filter(p => statusOf("borsi", p) === "won" && statusOf("heni", p) === "won");
+      const favBox = document.createElement("div");
+      favBox.className = "favorites";
+      const favH = document.createElement("h3");
+      favH.innerHTML = `💖 Mindkettőnek tetszik <span class="count" style="color:var(--muted);font-weight:500;">(${favs.length})</span>`;
+      favBox.appendChild(favH);
+      const favWrap = document.createElement("div");
+      favWrap.className = "chip-wrap";
+      if (favs.length === 0) {
+        const e = document.createElement("span");
+        e.className = "empty";
+        e.textContent = "Még nincs olyan, amit mindketten szeretnek.";
+        favWrap.appendChild(e);
+      } else {
+        favs.forEach(p => favWrap.appendChild(chip(p, null, false)));
+      }
+      favBox.appendChild(favWrap);
+      container.appendChild(favBox);
+
+      // per-player columns
+      const cols = document.createElement("div");
+      cols.className = "stats-columns";
+      Object.keys(PLAYERS).forEach(player => {
+        const col = document.createElement("div");
+        col.className = "player-col";
+        const h = document.createElement("h3");
+        h.textContent = PLAYERS[player];
+        col.appendChild(h);
+        const won = products.filter(p => statusOf(player, p) === "won");
+        const lost = products.filter(p => statusOf(player, p) === "lost");
+        const unrated = products.filter(p => statusOf(player, p) === "unrated");
+        col.appendChild(group("Nyert", "✅", won, player, true));
+        col.appendChild(group("Vesztett", "❌", lost, player, true));
+        col.appendChild(group("Nem értékelte még", "⬜", unrated, player, false));
+        cols.appendChild(col);
+      });
+      container.appendChild(cols);
+      return container;
+    }
   </script>
 </body>
 </html>
