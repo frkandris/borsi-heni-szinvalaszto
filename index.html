@@ -166,8 +166,6 @@
     border-radius: 18px;
     background: var(--card);
   }
-  .side.borsi { background: #f3f7fb; border-color: #d6e4f0; }
-  .side.heni  { background: #fbf4f7; border-color: #f0d6e2; }
   .side > h2 { text-align: center; margin: 0 0 18px; font-size: 1.3rem; }
   @media (max-width: 720px) {
     .split { grid-template-columns: 1fr; gap: 18px; }
@@ -215,11 +213,14 @@
   }
   .chip .chip-name { font-size: 0.78rem; color: var(--muted); max-width: 130px; }
   .chip .reset-btn {
-    border: none; background: #ececec; color: #555;
-    border-radius: 50%; width: 20px; height: 20px; cursor: pointer;
-    font-size: 0.75rem; line-height: 1; display: flex; align-items: center; justify-content: center;
+    border: none; background: none; color: #b3b3b3; padding: 0;
+    width: 18px; height: 18px; cursor: pointer;
+    font-size: 1rem; line-height: 1; display: flex; align-items: center; justify-content: center;
+    opacity: 0; transition: opacity .12s ease, color .12s ease;
   }
-  .chip .reset-btn:hover { background: #ddd; }
+  .chip:hover .reset-btn { opacity: 1; }
+  .chip .reset-btn:hover { color: #666; }
+  @media (hover: none) { .chip .reset-btn { opacity: .5; } }
 
 </style>
 </head>
@@ -486,8 +487,15 @@
       renderPlay();
     }
 
+    function resetBoth(id) {
+      delete votes.borsi[id];
+      delete votes.heni[id];
+      saveVotes();
+      renderPlay();
+    }
+
     // ---------- stats rendering ----------
-    function chip(p, player, resettable) {
+    function chip(p, onReset) {
       const el = document.createElement("div");
       el.className = "chip";
       el.appendChild(circleEl(p, 26));
@@ -495,12 +503,12 @@
       name.className = "chip-name";
       name.textContent = `${p.c1[1]}${p.c2 ? " / " + p.c2[1] : ""}`;
       el.appendChild(name);
-      if (resettable) {
+      if (onReset) {
         const rb = document.createElement("button");
         rb.className = "reset-btn";
-        rb.textContent = "↩";
+        rb.textContent = "×";
         rb.title = "Vissza nem értékelt állapotba";
-        rb.onclick = (e) => { e.stopPropagation(); resetVote(player, p.id); };
+        rb.onclick = (e) => { e.stopPropagation(); onReset(); };
         el.appendChild(rb);
       }
       return el;
@@ -520,7 +528,7 @@
         e.textContent = "—";
         wrap.appendChild(e);
       } else {
-        items.forEach(p => wrap.appendChild(chip(p, player, resettable)));
+        items.forEach(p => wrap.appendChild(chip(p, resettable ? () => resetVote(player, p.id) : null)));
       }
       g.appendChild(wrap);
       return g;
@@ -544,7 +552,7 @@
         e.textContent = "Még nincs olyan, amit mindketten szeretnek.";
         favWrap.appendChild(e);
       } else {
-        favs.forEach(p => favWrap.appendChild(chip(p, null, false)));
+        favs.forEach(p => favWrap.appendChild(chip(p, () => resetBoth(p.id))));
       }
       favBox.appendChild(favWrap);
       container.appendChild(favBox);
