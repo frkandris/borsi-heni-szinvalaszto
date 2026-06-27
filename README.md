@@ -1,4 +1,4 @@
-# Borsi & Heni Színválasztó
+# Borsi & Henni Színválasztó
 
 Egyszerű, egyetlen fájlból álló (`index.html`) webalkalmazás színpárok böngészéséhez és kedvenc-választó játékhoz. Nincs build, nincs külső függőség — bárhol megnyitható, és GitHub Pages szolgálja ki.
 
@@ -12,7 +12,7 @@ A főoldalon két mód közül lehet választani:
 Az összes színpár rácsos nézetben. Minden színpárt egy kör mutat, aminek bal fele az egyik, jobb fele a másik szín. Alatta a színek neve és hex kódja.
 
 ### 🎮 Játék
-Osztott képernyő: **Borsi** és **Heni** egyszerre, egymás mellett játszik. Mindkét oldalon két színpár jelenik meg, és négyféleképpen lehet dönteni:
+Osztott képernyő: **Borsi** és **Henni** egyszerre, egymás mellett játszik. Mindkét oldalon két színpár jelenik meg, és négyféleképpen lehet dönteni:
 
 - **bal kör** → az nyer, a másik veszít
 - **jobb kör** → az nyer, a másik veszít
@@ -25,7 +25,7 @@ A program először az adott játékos által még nem értékelt párokat aján
 A játék alatt mindkét játékos teljes állapota látszik:
 
 - ✅ **Nyert** · ❌ **Vesztett** · ⬜ **Nem értékelte még**
-- **Mindkettőnknek tetszik** — azok a párok, amiket Borsi és Heni is megnyertnek jelölt
+- **Mindkettőnknek tetszik** — azok a párok, amiket Borsi és Henni is megnyertnek jelölt
 
 A nyert/vesztett elemekre, valamint a „Mindkettőnknek tetszik" elemekre húzva megjelenik egy halvány **×**, amivel a színpár visszaküldhető „nem értékelte még" állapotba (a kedvenceknél mindkét játékosnál). A „Nem értékelte még" elemekre húzva egy **✅ / ❌** pár jelenik meg, amivel ott helyben lehet rájuk szavazni.
 
