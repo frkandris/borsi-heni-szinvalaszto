@@ -27,7 +27,7 @@ A játék alatt mindkét játékos teljes állapota látszik:
 - ✅ **Nyert** · ❌ **Vesztett** · ⬜ **Nem értékelte még**
 - **Mindkettőnknek tetszik** — azok a párok, amiket Borsi és Heni is megnyertnek jelölt
 
-A nyert/vesztett elemekre, valamint a „Mindkettőnknek tetszik" elemekre húzva megjelenik egy halvány **×**, amivel a színpár visszaküldhető „nem értékelte még" állapotba (a kedvenceknél mindkét játékosnál).
+A nyert/vesztett elemekre, valamint a „Mindkettőnknek tetszik" elemekre húzva megjelenik egy halvány **×**, amivel a színpár visszaküldhető „nem értékelte még" állapotba (a kedvenceknél mindkét játékosnál). A „Nem értékelte még" elemekre húzva egy **✅ / ❌** pár jelenik meg, amivel ott helyben lehet rájuk szavazni.
 
 ## Tárolás
 

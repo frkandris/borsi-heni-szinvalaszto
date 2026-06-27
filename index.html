@@ -222,6 +222,19 @@
   .chip .reset-btn:hover { color: #666; }
   @media (hover: none) { .chip .reset-btn { opacity: .5; } }
 
+  .chip .chip-actions {
+    display: inline-flex; gap: 3px; align-items: center;
+    opacity: 0; transition: opacity .12s ease;
+  }
+  .chip:hover .chip-actions { opacity: 1; }
+  .chip-vote {
+    border: none; background: none; cursor: pointer; padding: 0 1px;
+    font-size: 0.82rem; line-height: 1; filter: grayscale(0.15);
+    transition: transform .1s ease;
+  }
+  .chip-vote:hover { transform: scale(1.25); }
+  @media (hover: none) { .chip .chip-actions { opacity: .7; } }
+
 </style>
 </head>
 <body>
@@ -481,6 +494,12 @@
       renderPlay();
     }
 
+    function setVote(player, id, val) {
+      votes[player][id] = val;
+      saveVotes();
+      renderPlay();
+    }
+
     function resetVote(player, id) {
       delete votes[player][id];
       saveVotes();
@@ -495,7 +514,8 @@
     }
 
     // ---------- stats rendering ----------
-    function chip(p, onReset) {
+    function chip(p, opts) {
+      opts = opts || {};
       const el = document.createElement("div");
       el.className = "chip";
       el.appendChild(circleEl(p, 26));
@@ -503,18 +523,35 @@
       name.className = "chip-name";
       name.textContent = `${p.c1[1]}${p.c2 ? " / " + p.c2[1] : ""}`;
       el.appendChild(name);
-      if (onReset) {
+
+      if (opts.onUp || opts.onDown) {
+        const actions = document.createElement("span");
+        actions.className = "chip-actions";
+        if (opts.onUp) actions.appendChild(voteBtn("✅", "Nyert", opts.onUp));
+        if (opts.onDown) actions.appendChild(voteBtn("❌", "Vesztett", opts.onDown));
+        el.appendChild(actions);
+      }
+      if (opts.onReset) {
         const rb = document.createElement("button");
         rb.className = "reset-btn";
         rb.textContent = "×";
         rb.title = "Vissza nem értékelt állapotba";
-        rb.onclick = (e) => { e.stopPropagation(); onReset(); };
+        rb.onclick = (e) => { e.stopPropagation(); opts.onReset(); };
         el.appendChild(rb);
       }
       return el;
     }
 
-    function group(title, emoji, items, player, resettable) {
+    function voteBtn(label, title, fn) {
+      const b = document.createElement("button");
+      b.className = "chip-vote";
+      b.textContent = label;
+      b.title = title;
+      b.onclick = (e) => { e.stopPropagation(); fn(); };
+      return b;
+    }
+
+    function group(title, emoji, items, makeOpts) {
       const g = document.createElement("div");
       g.className = "stat-group";
       const h = document.createElement("h4");
@@ -528,7 +565,7 @@
         e.textContent = "—";
         wrap.appendChild(e);
       } else {
-        items.forEach(p => wrap.appendChild(chip(p, resettable ? () => resetVote(player, p.id) : null)));
+        items.forEach(p => wrap.appendChild(chip(p, makeOpts ? makeOpts(p) : null)));
       }
       g.appendChild(wrap);
       return g;
@@ -552,7 +589,7 @@
         e.textContent = "Még nincs olyan, ami mindkettőnknek tetszik.";
         favWrap.appendChild(e);
       } else {
-        favs.forEach(p => favWrap.appendChild(chip(p, () => resetBoth(p.id))));
+        favs.forEach(p => favWrap.appendChild(chip(p, { onReset: () => resetBoth(p.id) })));
       }
       favBox.appendChild(favWrap);
       container.appendChild(favBox);
@@ -569,9 +606,14 @@
         const won = products.filter(p => statusOf(player, p) === "won");
         const lost = products.filter(p => statusOf(player, p) === "lost");
         const unrated = products.filter(p => statusOf(player, p) === "unrated");
-        col.appendChild(group("Nyert", "✅", won, player, true));
-        col.appendChild(group("Vesztett", "❌", lost, player, true));
-        col.appendChild(group("Nem értékelte még", "⬜", unrated, player, false));
+        const resetOpts = p => ({ onReset: () => resetVote(player, p.id) });
+        const voteOpts = p => ({
+          onUp: () => setVote(player, p.id, "won"),
+          onDown: () => setVote(player, p.id, "lost")
+        });
+        col.appendChild(group("Nyert", "✅", won, resetOpts));
+        col.appendChild(group("Vesztett", "❌", lost, resetOpts));
+        col.appendChild(group("Nem értékelte még", "⬜", unrated, voteOpts));
         cols.appendChild(col);
       });
       container.appendChild(cols);
