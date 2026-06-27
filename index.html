@@ -549,7 +549,7 @@
       if (favs.length === 0) {
         const e = document.createElement("span");
         e.className = "empty";
-        e.textContent = "Még nincs olyan, amit mindketten szeretnek.";
+        e.textContent = "Még nincs olyan, ami mindkettőnknek tetszik.";
         favWrap.appendChild(e);
       } else {
         favs.forEach(p => favWrap.appendChild(chip(p, () => resetBoth(p.id))));
