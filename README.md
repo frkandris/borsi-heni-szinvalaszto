@@ -25,7 +25,7 @@ A program először az adott játékos által még nem értékelt párokat aján
 A játék alatt mindkét játékos teljes állapota látszik:
 
 - ✅ **Nyert** · ❌ **Vesztett** · ⬜ **Nem értékelte még**
-- 💖 **Mindkettőnek tetszik** — azok a párok, amiket Borsi és Heni is megnyertnek jelölt
+- 💖 **Mindkettőnknek tetszik** — azok a párok, amiket Borsi és Heni is megnyertnek jelölt
 
 A nyert/vesztett elemeknél egy **↩** gombbal bármelyik színpárt vissza lehet küldeni „nem értékelte még" állapotba. A **Mindent töröl** gomb az összes szavazatot törli.
 

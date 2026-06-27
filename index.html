@@ -67,7 +67,28 @@
     transition: transform .08s ease, box-shadow .15s ease;
   }
   .home-btn:hover { transform: translateY(-2px); box-shadow: 0 6px 18px rgba(0,0,0,0.08); }
-  .home-btn .emoji { display: block; font-size: 2.4rem; margin-bottom: 10px; }
+
+  /* animated split-circle icon on the home buttons */
+  .home-icon {
+    display: block; width: 60px; height: 60px;
+    margin: 0 auto 16px; border-radius: 50%;
+    position: relative; overflow: hidden;
+    border: 1px solid rgba(0,0,0,0.08);
+  }
+  .home-icon .half { position: absolute; top: 0; width: 50%; height: 100%; }
+  .home-icon .half.left  { left: 0; }
+  .home-icon .half.right { right: 0; }
+  .home-icon.a .half.left  { background: #1f87b5; animation: hueShift 16s linear infinite; }
+  .home-icon.a .half.right { background: #d380bb; animation: hueShift 22s linear infinite; }
+  .home-icon.b .half.left  { background: #54cdba; animation: hueShift 19s linear infinite; }
+  .home-icon.b .half.right { background: #f6bb5f; animation: hueShift 25s linear infinite; }
+  @keyframes hueShift {
+    from { filter: hue-rotate(0deg); }
+    to   { filter: hue-rotate(360deg); }
+  }
+  @media (prefers-reduced-motion: reduce) {
+    .home-icon .half { animation: none !important; }
+  }
 
   /* --- list grid --- */
   .grid {
@@ -119,36 +140,37 @@
 
   /* --- play --- */
   .arena {
-    display: flex; gap: 24px; justify-content: center;
-    align-items: stretch; flex-wrap: wrap; margin-bottom: 18px;
+    display: grid; grid-template-columns: 1fr auto 1fr;
+    gap: 14px; align-items: center; margin-bottom: 18px;
   }
   .choice {
     background: var(--card); border: 2px solid var(--border);
-    border-radius: 18px; padding: 24px; cursor: pointer;
+    border-radius: 18px; padding: 20px 14px; cursor: pointer;
     display: flex; flex-direction: column; align-items: center;
     transition: transform .08s ease, border-color .12s ease, box-shadow .15s ease;
-    min-width: 200px;
+    min-width: 0;
   }
   .choice:hover { transform: translateY(-3px); border-color: var(--accent); box-shadow: 0 8px 22px rgba(0,0,0,0.1); }
   .vs { align-self: center; font-weight: 700; color: var(--muted); font-size: 1.1rem; }
 
-  /* split screen: Borsi | Heni */
+  /* split screen: Borsi | Heni — two distinct cards */
   .split {
     display: grid;
     grid-template-columns: 1fr 1fr;
-    gap: 0;
+    gap: 26px;
     margin-bottom: 30px;
+  }
+  .side {
+    padding: 22px 18px;
     border: 1px solid var(--border);
     border-radius: 18px;
-    overflow: hidden;
     background: var(--card);
   }
-  .side { padding: 22px 18px; }
-  .side:first-child { border-right: 1px solid var(--border); }
+  .side.borsi { background: #f3f7fb; border-color: #d6e4f0; }
+  .side.heni  { background: #fbf4f7; border-color: #f0d6e2; }
   .side > h2 { text-align: center; margin: 0 0 18px; font-size: 1.3rem; }
   @media (max-width: 720px) {
-    .split { grid-template-columns: 1fr; }
-    .side:first-child { border-right: none; border-bottom: 1px solid var(--border); }
+    .split { grid-template-columns: 1fr; gap: 18px; }
   }
 
   .action-row { display: flex; gap: 14px; justify-content: center; margin-bottom: 8px; flex-wrap: wrap; }
@@ -215,8 +237,14 @@
   <!-- HOME -->
   <div class="view active" id="view-home">
     <div class="home-buttons">
-      <button class="home-btn" onclick="showView('list')">Lista megtekintése</button>
-      <button class="home-btn" onclick="showView('play')">Játék</button>
+      <button class="home-btn" onclick="showView('list')">
+        <span class="home-icon a"><span class="half left"></span><span class="half right"></span></span>
+        Lista megtekintése
+      </button>
+      <button class="home-btn" onclick="showView('play')">
+        <span class="home-icon b"><span class="half left"></span><span class="half right"></span></span>
+        Játék
+      </button>
     </div>
   </div>
 
@@ -414,7 +442,7 @@
 
     function sideEl(player) {
       const side = document.createElement("div");
-      side.className = "side";
+      side.className = "side " + player;
       const h = document.createElement("h2");
       h.textContent = PLAYERS[player];
       side.appendChild(h);
@@ -530,7 +558,7 @@
       const favBox = document.createElement("div");
       favBox.className = "favorites";
       const favH = document.createElement("h3");
-      favH.innerHTML = `💖 Mindkettőnek tetszik <span class="count" style="color:var(--muted);font-weight:500;">(${favs.length})</span>`;
+      favH.innerHTML = `💖 Mindkettőnknek tetszik <span class="count" style="color:var(--muted);font-weight:500;">(${favs.length})</span>`;
       favBox.appendChild(favH);
       const favWrap = document.createElement("div");
       favWrap.className = "chip-wrap";
