@@ -1,0 +1,169 @@
+<!DOCTYPE html>
+<html lang="hu">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Színválasztó</title>
+<style>
+  :root {
+    --bg: #f7f7f5;
+    --card: #ffffff;
+    --text: #1b1b1b;
+    --muted: #6b6b6b;
+    --border: #e6e6e3;
+  }
+  * { box-sizing: border-box; }
+  body {
+    margin: 0;
+    font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, Helvetica, Arial, sans-serif;
+    background: var(--bg);
+    color: var(--text);
+    padding: 32px 16px 64px;
+  }
+  h1 {
+    text-align: center;
+    font-weight: 600;
+    font-size: 1.8rem;
+    margin: 0 0 4px;
+  }
+  .sub {
+    text-align: center;
+    color: var(--muted);
+    margin: 0 0 32px;
+    font-size: 0.95rem;
+  }
+  .grid {
+    max-width: 1100px;
+    margin: 0 auto;
+    display: grid;
+    grid-template-columns: repeat(auto-fill, minmax(220px, 1fr));
+    gap: 18px;
+  }
+  .card {
+    background: var(--card);
+    border: 1px solid var(--border);
+    border-radius: 14px;
+    padding: 20px 16px;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    text-align: center;
+  }
+  .circle {
+    width: 96px;
+    height: 96px;
+    border-radius: 50%;
+    margin-bottom: 14px;
+  }
+  .name {
+    font-weight: 600;
+    font-size: 0.95rem;
+    margin-bottom: 8px;
+    line-height: 1.3;
+  }
+  .colors {
+    display: flex;
+    flex-direction: column;
+    gap: 4px;
+    width: 100%;
+  }
+  .color-row {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    gap: 7px;
+    font-size: 0.82rem;
+    color: var(--muted);
+  }
+  .swatch {
+    width: 13px;
+    height: 13px;
+    border-radius: 50%;
+    border: 1px solid rgba(0,0,0,0.12);
+    flex-shrink: 0;
+  }
+  .hex {
+    font-family: ui-monospace, SFMono-Regular, Menlo, monospace;
+    font-size: 0.74rem;
+    color: #999;
+  }
+</style>
+</head>
+<body>
+  <div class="grid" id="grid"></div>
+
+  <script>
+    const products = [
+      { name: "ORIGINAL – napsárga-bordó", c1: ["#f6bb5f", "napsárga"], c2: ["#ae121e", "bordó"] },
+      { name: "ORIGINAL – tengerkék-pink", c1: ["#1f87b5", "tengerkék"], c2: ["#d380bb", "pink"] },
+      { name: "KING SIZE – tengerkék-pink", c1: ["#d37fba", "pink"], c2: ["#1f88b6", "tengerkék"] },
+      { name: "ORIGINAL – tengerkék-szürke", c1: ["#1392bf", "tengerkék"], c2: ["#4c5c67", "szürke"] },
+      { name: "ORIGINAL – zöld-smaragdzöld", c1: ["#54cdba", "smaragdzöld"], c2: ["#1b7078", "sötétzöld"] },
+      { name: "ORIGINAL – zöld-szürke-tengerkék", c1: ["#385d4f", "sötétzöld"], c2: ["#aab4b2", "szürke"] },
+      { name: "ORIGINAL – keki-fenyőzöld", c1: ["#404f3b", "fenyőzöld"], c2: ["#adb19f", "keki"] },
+      { name: "ORIGINAL – lila-szilva-barack", c1: ["#be9693", "barack"], c2: ["#47133c", "szilva-lila"] },
+      { name: "ORIGINAL – mentazöld-világosbarna", c1: ["#abe2d6", "mentazöld"], c2: ["#a7b5a3", "világosbarna"] },
+      { name: "ORIGINAL – aranybarna-oliva", c1: ["#a69a82", "aranybarna"], c2: ["#484526", "oliva"] },
+      { name: "ORIGINAL – sötétkék-türkiz", c1: ["#2f5f95", "sötétkék"], c2: ["#56c2c9", "türkiz"] },
+      { name: "KING SIZE – szürke-narancs", c1: ["#675957", "szürke"], c2: ["#ea582f", "narancs"] },
+      { name: "KING SIZE – napsárga-bordó", c1: ["#dba963", "napsárga"], c2: ["#8f232c", "bordó"] },
+      { name: "ORIGINAL – napsárga-narancs", c1: ["#eebd6c", "napsárga"], c2: ["#d5620d", "narancs"] },
+      { name: "KING SIZE – sötétkék-narancs", c1: ["#294b77", "sötétkék"], c2: ["#e5745d", "narancs"] },
+      { name: "KING SIZE – oliva-aranybarna", c1: ["#484527", "oliva"], c2: ["#a79a83", "aranybarna"] },
+      { name: "ORIGINAL – aranybarna-sötétbarna", c1: ["#bc9e7b", "aranybarna"], c2: ["#764433", "sötétbarna"] },
+      { name: "KING SIZE – sötétzöld", c1: ["#26432f", "sötétzöld"], c2: ["#aeb4aa", "világosszürke"] },
+      { name: "KING SIZE – aranybarna-sötétbarna", c1: ["#bfa17d", "aranybarna"], c2: ["#714131", "sötétbarna"] },
+      { name: "KING SIZE – tengerkék-szürke", c1: ["#1c799c", "tengerkék"], c2: ["#a8bcc4", "szürke"] },
+      { name: "KING SIZE – keki-fenyőzöld", c1: ["#a7ab97", "keki"], c2: ["#3f4e3a", "fenyőzöld"] },
+      { name: "KING SIZE – mentazöld-jáde zöld", c1: ["#a6d2c7", "mentazöld"], c2: ["#78978a", "jáde zöld"] },
+      { name: "KING SIZE – kék-türkiz", c1: ["#63cde2", "türkiz"], c2: ["#355794", "kék"] },
+      { name: "ORIGINAL – piros-bordó", c1: ["#e71223", "piros"], c2: ["#ed8f9b", "világosabb piros/rosé"] },
+      { name: "ORIGINAL – zöld-türkiz", c1: ["#39c5c8", "türkiz"], c2: ["#11908d", "zöld-türkiz"] },
+      { name: "KING SIZE – pink-lila", c1: ["#df5893", "pink"], c2: ["#583668", "lila"] },
+      { name: "KING SIZE – smaragdzöld-sötétzöld", c1: ["#9fc4be", "smaragdzöld"], c2: ["#0f5652", "sötétzöld"] },
+      { name: "COLIBRI 3.0 DOUBLE – napsárga-narancs", c1: ["#f07416", "narancs"], c2: ["#f5c9ac", "halvány sárga"] },
+      { name: "KING SIZE – szilva", c1: ["#bdaeca", "halványlila"], c2: ["#5a214a", "szilva"] },
+      { name: "COLIBRI 3.0 DOUBLE – terepmintás-homok", c1: ["#e7cab2", "homok"], c2: ["#daa980", "sötétebb homok"] },
+      { name: "KING SIZE – aranybarna", c1: ["#716843", "aranybarna"], c2: ["#a49b78", "világosabb barna"] },
+      { name: "ORIGINAL – napsárga-narancs (2)", c1: ["#f6973c", "narancs"], c2: ["#d11508", "piros-narancs"] },
+      { name: "KING SIZE – napsárga-aranybarna", c1: ["#f0c277", "napsárga"], c2: ["#866039", "aranybarna"] },
+      { name: "COLIBRI 3.0 DOUBLE – barna-homok", c1: ["#87795b", "barna"], c2: ["#3b3223", "sötétbarna"] },
+      { name: "ORIGINAL – türkiz-tengerkék", c1: ["#62d8e4", "türkiz"], c2: null }
+    ];
+
+    const grid = document.getElementById("grid");
+
+    products.forEach(p => {
+      const card = document.createElement("div");
+      card.className = "card";
+
+      const circle = document.createElement("div");
+      circle.className = "circle";
+      if (p.c2) {
+        circle.style.background = `linear-gradient(to right, ${p.c1[0]} 0 50%, ${p.c2[0]} 50% 100%)`;
+      } else {
+        circle.style.background = p.c1[0];
+      }
+
+      const colors = document.createElement("div");
+      colors.className = "colors";
+
+      const rows = p.c2 ? [p.c1, p.c2] : [p.c1];
+      rows.forEach(c => {
+        const row = document.createElement("div");
+        row.className = "color-row";
+        row.innerHTML = `
+          <span class="swatch" style="background:${c[0]}"></span>
+          <span>${c[1]}</span>
+          <span class="hex">${c[0]}</span>
+        `;
+        colors.appendChild(row);
+      });
+
+      card.appendChild(circle);
+      card.appendChild(colors);
+      grid.appendChild(card);
+    });
+  </script>
+</body>
+</html>
